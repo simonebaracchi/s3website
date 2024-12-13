@@ -11,10 +11,21 @@ on_error() {
 
 bucket=$( cat bucketname )
 
-if [ "$bucket" -eq "" ]; then
+if [ "$bucket" = "" ]; then
     echo The bucket name is unspecified. Cannot continue.
     exit 1
 fi
 
-aws s3 cp "$1" s3://$bucket --recursive
-on_error Error uploading bucket data. Exiting.
+for i in "$@"; do
+    echo Copying "$i"
+    if [[ -d "$i" ]]; then
+        aws s3 cp "$i/" "s3://$bucket/$i/" --recursive
+        on_error Error uploading directory to bucket. Exiting.
+    elif [[ -f "$i" ]]; then
+        aws s3 cp "$i" "s3://$bucket/" 
+        on_error Error uploading file to bucket. Exiting.
+    else
+        echo Object $i is unsupported
+        exit 1
+    fi
+done
