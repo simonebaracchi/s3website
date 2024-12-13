@@ -29,6 +29,9 @@ on_error Cannot create bucket
 aws s3 website s3://$bucket --index-document index.html --error-document error.html
 on_error Cannot configure bucket for static website hosting
 
+aws s3api delete-public-access-block --bucket $bucket
+on_error Cannot enable public access on bucket
+
 sed "s/WEBSITE_NAME_HERE/$bucket/g" policy.json.template > policy.json
 on_error Cannot generate policy file. Maybe check the website name has no special characters in it?
 
