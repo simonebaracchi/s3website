@@ -1,0 +1,64 @@
+{
+    "CallerReference": "BUCKET_HERE",
+    "Aliases": {
+        "Quantity": 1,
+        "Items": [
+            "BUCKET_HERE"
+        ]
+    },
+    "DefaultRootObject": "index.html",
+    "Origins": {
+        "Quantity": 1,
+        "Items": [
+            {
+                "Id": "S3-BUCKET_HERE-origin",
+                "DomainName": "BUCKET_HERE.s3.REGION_HERE.amazonaws.com",
+                "OriginPath": "",
+                "S3OriginConfig": {
+                    "OriginAccessIdentity": ""
+                }
+            }
+        ]
+    },
+    "DefaultCacheBehavior": {
+        "TargetOriginId": "S3-BUCKET_HERE-origin",
+        "ViewerProtocolPolicy": "redirect-to-https",
+        "AllowedMethods": {
+            "Quantity": 3,
+            "Items": ["GET", "HEAD", "OPTIONS"]
+        },
+        "Compress": true,
+        "DefaultTTL": 86400,
+        "MinTTL": 0,
+        "ForwardedValues": {
+            "QueryString": false,
+            "Cookies": {
+                "Forward": "none"
+            }
+        }
+    },
+    "CustomErrorResponses": {
+        "Quantity": 2,
+        "Items": [
+            {
+                "ErrorCode": 403,
+                "ResponsePagePath": "/error.html",
+                "ResponseCode": "403",
+                "ErrorCachingMinTTL": 10
+            },
+            {
+                "ErrorCode": 404,
+                "ResponsePagePath": "/error.html",
+                "ResponseCode": "404",
+                "ErrorCachingMinTTL": 10
+            }
+        ]
+    },
+    "ViewerCertificate": {
+        "ACMCertificateArn": "CERT_ARN_HERE",
+        "SSLSupportMethod": "sni-only",
+        "MinimumProtocolVersion": "TLSv1.2_2021"
+    },
+    "Comment": "BUCKET_HERE CloudFront distribution",
+    "Enabled": true
+} 

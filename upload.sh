@@ -1,20 +1,10 @@
 #!/usr/bin/env bash
 
-on_error() {
-    error=$?
-    if [ $error -ne 0 ]; then
-        echo $@
-        echo Exiting with error code $error
-        exit $error
-    fi
-}
+home=`dirname -- "$( readlink -f -- "$0"; )";`
+source $home/config.sh
 
-bucket=$( cat bucketname )
-
-if [ "$bucket" = "" ]; then
-    echo The bucket name is unspecified. Cannot continue.
-    exit 1
-fi
+bucket=$(get_bucket)
+on_error The bucket name is unspecified. Cannot continue.
 
 for i in "$@"; do
     echo Copying "$i"
