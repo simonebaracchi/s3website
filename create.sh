@@ -31,6 +31,18 @@ on_error Cannot generate policy file. Maybe check the website name has no specia
 aws s3api put-bucket-policy --bucket $bucket --policy file://policy.json
 on_error Cannot apply policy
 
+aws s3api put-bucket-cors --bucket $bucket --cors-configuration '{
+    "CORSRules": [
+        {
+            "AllowedOrigins": ["*"],
+            "AllowedMethods": ["GET", "HEAD"],
+            "AllowedHeaders": ["*"],
+            "ExposeHeaders": ["ETag"],
+            "MaxAgeSeconds": 3000
+        }
+    ]
+}'
+
 echo Done!
 
 region=$(get_region)
