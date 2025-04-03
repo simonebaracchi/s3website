@@ -19,12 +19,14 @@ out=`aws acm import-certificate --certificate fileb://$cert_file --private-key f
 on_error Certificate import failed.
 arn=`echo $out | jq -r '.CertificateArn'`
 
-sed -e "s#BUCKET_HERE#$bucket#g ; s#REGION_HERE#$region#g ; s#CERT_ARN_HERE#$arn#g" $home/distribution.json.template > $home/distribution.json
-aws cloudfront create-distribution --distribution-config file://$home/distribution.json | tee /tmp/cloudfront-output
-on_error Cannot create Cloudfront distribution.
+ID=`aws cloudfront list-distributions | jq -r '.DistributionList.Items[] | select(.Comment | test("'"$bucket"'")) | .Id'`
+etag=`aws cloudfront get-distribution --id $ID --query "ETag" --output text`
+aws cloudfront get-distribution-config --id $ID  --query 'DistributionConfig' > /tmp/cloudfront-distribution.json
 
-domain=`cat /tmp/cloudfront-output | jq -r '.Distribution.DomainName'`
+jq ".ViewerCertificate.ACMCertificateArn = \"$arn\"" /tmp/cloudfront-distribution.json > /tmp/cloudfront-updated-distribution.json
+
+aws cloudfront update-distribution --id $ID --if-match $etag --distribution-config file:///tmp/cloudfront-updated-distribution.json | tee /tmp/cloudfront-output
+on_error Cannot update Cloudfront distribution.
+
 echo The distribution is ready.
-echo You should update the DNS CNAME record to point at:
-echo https://$domain
 

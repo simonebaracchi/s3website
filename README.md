@@ -18,7 +18,7 @@ Creating a website on AWS S3 has several advantages:
 Create a suitable AWS user and credentials pair. Such user should have at least
   - permission to write to S3 bucket
   - permission to import certificates in ACM, i.e. acm:ImportCertificate (if using SSL)
-  - permission to create distribution in Cloudfront, i.e. cloudfront:CreateDistribution (if using SSL)
+  - permission to create distribution in Cloudfront, i.e. cloudfront:CreateDistribution, GetDistribution, GetDistributionConfig, UpdateDistribution, ListDistributions (if using SSL)
 
 Install and configure awscli, certbot, jq (pip3 install --upgrade awscli ; apt install certbot jq; aws configure)
 
@@ -44,4 +44,6 @@ Buy the domain, then run `./cloudfront.sh`. The script will:
 
 The DNS domain should now be configured to redirect (via CNAME alias) to the Cloudfront distribution.
 
+## Update certificate ##
 
+Run `update_cert.sh`. Upload the challenge string if needed
