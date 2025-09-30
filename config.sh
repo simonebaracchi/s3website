@@ -33,3 +33,6 @@ get_bucket_url() {
 get_website_url() {
     echo https://$1.s3-website-$2.amazonaws.com
 }
+get_region_opt() {
+    echo --region $(get_region)
+}

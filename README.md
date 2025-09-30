@@ -13,26 +13,40 @@ Creating a website on AWS S3 has several advantages:
   - Serverless: one less thing to manage;
   - Not necessarily static: the content itself can actually be easily updated via APIs, either via AWS Lambda or another computing instance running somewhere else (whose specs can be significantly smaller compared to a website meant to serve millions of users). 
 
-## Setup ##
+## System setup ##
 
-Create a suitable AWS user and credentials pair. Such user should have at least
-  - permission to write to S3 bucket
-  - permission to import certificates in ACM, i.e. acm:ImportCertificate (if using SSL)
-  - permission to create distribution in Cloudfront, i.e. cloudfront:CreateDistribution, GetDistribution, GetDistributionConfig, UpdateDistribution, ListDistributions (if using SSL)
+Install and configure awscli, certbot, jq (pip3 install --upgrade awscli ; apt install certbot jq)
 
-Install and configure awscli, certbot, jq (pip3 install --upgrade awscli ; apt install certbot jq; aws configure)
-
-## Create the website ##
+## Credentials setup ##
 
 Decide the website name. Usually something like www.example.com.
 
-Then run `./create.sh`. The script will:
+Create a suitable AWS user and credentials pair (eg via the AWS console). Such user should have at least
+  - permission to write to S3 bucket
+  - permission to import certificates in ACM (if using SSL)
+  - permission to create distribution in Cloudfront (if using SSL).
+
+See user_permissions.json for an example permissions schema.
+
+Then insert the credentials in the AWS cli tool:
+
+`# export AWS_PROFILE=www.example.com`
+
+`# aws configure`
+
+## Create the website ##
+
+Run `./create.sh`. The script will:
 
   - Create a s3 bucket (using the name you will provide)
   - configure bucket for static website hosting
   - configure bucket policy for public read
 
-Then, copy all files to the bucket. The "upload.sh" helper tool may be used.
+Then, copy all files to the bucket. The "upload.sh" helper tool may be used. For example, if your pages are in the `src` directory:
+
+`# cd src`
+
+`# path_to_script/upload.sh *`
 
 ## Setup domain name and SSL ##
 
