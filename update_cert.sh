@@ -15,7 +15,7 @@ cert_file=/etc/letsencrypt/live/$bucket/cert.pem
 cert_full=/etc/letsencrypt/live/$bucket/fullchain.pem
 cert_priv=/etc/letsencrypt/live/$bucket/privkey.pem
 
-out=`aws acm import-certificate --certificate fileb://$cert_file --private-key fileb://$cert_priv --certificate-chain fileb://$cert_full --region $region`
+out=`aws acm import-certificate --certificate fileb://$cert_file --private-key fileb://$cert_priv --certificate-chain fileb://$cert_full --region us-east-1`
 on_error Certificate import failed.
 arn=`echo $out | jq -r '.CertificateArn'`
 
